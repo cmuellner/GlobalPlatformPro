@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.crypto.Cipher;
 import javax.smartcardio.Card;
@@ -38,8 +39,6 @@ import javax.smartcardio.CardTerminals;
 import javax.smartcardio.CardTerminals.State;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.TerminalFactory;
-
-import com.google.common.base.Joiner;
 
 import apdu4j.APDUReplayProvider;
 import apdu4j.HexUtils;
@@ -325,7 +324,8 @@ public final class GPTool {
 
 		if (args.has(OPT_LIST_PRIVS)) {
 			System.out.println("# Known privileges:");
-			System.out.println(Joiner.on("\n").join(Privilege.values()));
+			String s = Arrays.stream(Privilege.values()).map(Privilege::toString).collect(Collectors.joining("\n"));
+			System.out.println(s);
 		}
 
 		// Now actually talk to possible terminals

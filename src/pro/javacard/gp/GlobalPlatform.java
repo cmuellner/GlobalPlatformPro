@@ -36,6 +36,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.crypto.BadPaddingException;
@@ -60,8 +61,6 @@ import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
 
 import apdu4j.HexUtils;
 import apdu4j.ISO7816;
@@ -257,7 +256,8 @@ public class GlobalPlatform {
 				// FIXME System.out.println(ASN1Dump.dumpAsString(fcidata, true));
 				if (fcidata.getApplicationTag() == 15) {
 					ASN1Sequence s = ASN1Sequence.getInstance(fcidata.getObject(BERTags.SEQUENCE));
-					for (ASN1Encodable e: Lists.newArrayList(s.iterator())) {
+					for (Iterator<ASN1Encodable> it = s.iterator(); it.hasNext(); ) {
+						ASN1Encodable e = it.next();
 						ASN1TaggedObject t = DERTaggedObject.getInstance(e);
 						if (t.getTagNo() == 4) {
 							// ISD AID
@@ -274,7 +274,8 @@ public class GlobalPlatform {
 							// Proprietary, usually a sequence
 							if (t.getObject() instanceof ASN1Sequence) {
 								ASN1Sequence prop = ASN1Sequence.getInstance(t.getObject());
-								for (ASN1Encodable enc: Lists.newArrayList(prop.iterator())) {
+								for (Iterator<ASN1Encodable> propIt = prop.iterator(); propIt.hasNext(); ) {
+									ASN1Encodable enc = it.next();
 									ASN1Primitive proptag = enc.toASN1Primitive();
 									if (proptag instanceof DERApplicationSpecific) {
 										DERApplicationSpecific isddata = (DERApplicationSpecific) proptag;

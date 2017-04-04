@@ -20,8 +20,7 @@
 package pro.javacard.gp;
 
 import java.util.EnumSet;
-
-import com.google.common.base.Joiner;
+import java.util.stream.Collectors;
 
 public class GPRegistryEntry {
 
@@ -345,7 +344,7 @@ public class GPRegistryEntry {
 		}
 
 		public String toString() {
-			return Joiner.on(", ").join(privs);
+			return privs.stream().map(Privilege::toString).collect(Collectors.joining(", "));
 		}
 		public boolean has(Privilege p) {
 			return privs.contains(p);

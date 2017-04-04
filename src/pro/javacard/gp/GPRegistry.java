@@ -41,8 +41,6 @@ import org.bouncycastle.asn1.DERTaggedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
-
 import apdu4j.HexUtils;
 import pro.javacard.gp.GPRegistryEntry.Kind;
 import pro.javacard.gp.GPRegistryEntry.Privilege;
@@ -238,7 +236,8 @@ public class GPRegistry implements Iterable<GPRegistryEntry> {
 					GPRegistryEntryApp app = new GPRegistryEntryApp();
 					GPRegistryEntryPkg pkg = new GPRegistryEntryPkg();
 					ASN1Sequence seq = (ASN1Sequence) registry_data.getObject(BERTags.SEQUENCE);
-					for (ASN1Encodable p: Lists.newArrayList(seq.iterator())) {
+					for (Iterator<ASN1Encodable> it = seq.iterator(); it.hasNext(); ) {
+						ASN1Encodable p = it.next();
 						if (p instanceof DERApplicationSpecific) {
 							ASN1ApplicationSpecific entry = DERApplicationSpecific.getInstance(p);
 							if (entry.getApplicationTag() == 15) {

@@ -24,6 +24,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.smartcardio.CardException;
@@ -35,8 +36,6 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.DERApplicationSpecific;
-
-import com.google.common.collect.Lists;
 
 import apdu4j.HexUtils;
 import pro.javacard.gp.GPKeySet.GPKey;
@@ -162,7 +161,8 @@ public final class GPData {
 				// System.out.println(ASN1Dump.dumpAsString(keys, true));
 
 				ASN1Sequence seq = (ASN1Sequence) keys.getObject(BERTags.SEQUENCE);
-				for (ASN1Encodable p: Lists.newArrayList(seq.iterator())) {
+				for (Iterator<ASN1Encodable> it = seq.iterator(); it.hasNext(); ) {
+					ASN1Encodable p = it.next();
 					ASN1ApplicationSpecific key = (DERApplicationSpecific) p.toASN1Primitive();
 					byte [] tmpl = key.getContents();
 					if (tmpl.length < 4) {
@@ -190,7 +190,8 @@ public final class GPData {
 				// Read card recognition data
 				DERApplicationSpecific card_data = (DERApplicationSpecific) ais.readObject();
 				ASN1Sequence seq = (ASN1Sequence) card_data.getObject(BERTags.SEQUENCE);
-				for (ASN1Encodable p: Lists.newArrayList(seq.iterator())) {
+				for (Iterator<ASN1Encodable> it = seq.iterator(); it.hasNext(); ) {
+					ASN1Encodable p = it.next();
 					if (p instanceof ASN1ObjectIdentifier) {
 						ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) p;
 						// Must be fixed
